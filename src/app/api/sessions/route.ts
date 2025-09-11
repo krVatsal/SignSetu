@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '../../../lib/mongodb';
+import dbConnect from '../../../lib/mongodb';
 import { ObjectId } from 'mongodb';
+import mongoose from 'mongoose';
 
 // GET /api/sessions - Get all sessions for a user
 export async function GET(request: NextRequest) {
   try {
+    await dbConnect();
+    
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
 
@@ -12,7 +15,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
     }
 
-    const db = await getDatabase();
+    const db = mongoose.connection.db;
+    if (!db) {
+      throw new Error('Database connection not available');
+    }
+    
     const sessions = await db.collection('sessions').find({ userId }).sort({ date: 1, startTime: 1 }).toArray();
 
     return NextResponse.json({ sessions });
@@ -25,6 +32,8 @@ export async function GET(request: NextRequest) {
 // POST /api/sessions - Create a new session
 export async function POST(request: NextRequest) {
   try {
+    await dbConnect();
+    
     const body = await request.json();
     const { title, date, startTime, endTime, description, notifyBefore, userId } = body;
 
@@ -47,7 +56,11 @@ export async function POST(request: NextRequest) {
       updatedAt: new Date()
     };
 
-    const db = await getDatabase();
+    const db = mongoose.connection.db;
+    if (!db) {
+      throw new Error('Database connection not available');
+    }
+    
     const result = await db.collection('sessions').insertOne(session);
 
     return NextResponse.json({ 
@@ -63,6 +76,8 @@ export async function POST(request: NextRequest) {
 // PUT /api/sessions/:id - Update a session
 export async function PUT(request: NextRequest) {
   try {
+    await dbConnect();
+    
     const body = await request.json();
     const { sessionId, ...updateData } = body;
 
@@ -70,7 +85,11 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Session ID is required' }, { status: 400 });
     }
 
-    const db = await getDatabase();
+    const db = mongoose.connection.db;
+    if (!db) {
+      throw new Error('Database connection not available');
+    }
+    
     const result = await db.collection('sessions').updateOne(
       { _id: new ObjectId(sessionId) },
       { 
@@ -95,6 +114,8 @@ export async function PUT(request: NextRequest) {
 // DELETE /api/sessions/:id - Delete a session
 export async function DELETE(request: NextRequest) {
   try {
+    await dbConnect();
+    
     const { searchParams } = new URL(request.url);
     const sessionId = searchParams.get('sessionId');
 
@@ -102,7 +123,11 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Session ID is required' }, { status: 400 });
     }
 
-    const db = await getDatabase();
+    const db = mongoose.connection.db;
+    if (!db) {
+      throw new Error('Database connection not available');
+    }
+    
     const result = await db.collection('sessions').deleteOne({ _id: new ObjectId(sessionId) });
 
     if (result.deletedCount === 0) {

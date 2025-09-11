@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDatabase } from '../../../../lib/mongodb';
+import dbConnect from '../../../../lib/mongodb';
+import mongoose from 'mongoose';
 
 export async function POST(request: NextRequest) {
   try {
+    await dbConnect();
+    
     const { userId, email, fullName } = await request.json();
 
     if (!userId || !email) {
@@ -12,7 +15,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const db = await getDatabase();
+    const db = mongoose.connection.db;
+    if (!db) {
+      throw new Error('Database connection not available');
+    }
+    
     const usersCollection = db.collection('users');
 
     // Check if user already exists
