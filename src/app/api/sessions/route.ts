@@ -1,7 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '../../../lib/mongodb';
-import { ObjectId } from 'mongodb';
+import { ObjectId, WithId, Document } from 'mongodb';
 import mongoose from 'mongoose';
+
+interface SessionData {
+  _id: string;
+  status: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  [key: string]: unknown;
+}
 
 // GET /api/sessions - Get all sessions for a user
 export async function GET(request: NextRequest) {
@@ -28,11 +37,11 @@ export async function GET(request: NextRequest) {
     const today = now.toISOString().split('T')[0]; // YYYY-MM-DD format
     const currentTime = now.getHours() * 60 + now.getMinutes(); // current time in minutes since midnight
     
-    const sessions = sessionsData.map((session: any) => {
+    const sessions = sessionsData.map((session: WithId<Document>) => {
       let status = 'upcoming';
       
-      const sessionDate = session.date;
-      const [sessionHours, sessionMinutes] = session.endTime.split(':').map(Number);
+      const sessionDate = session.date as string;
+      const [sessionHours, sessionMinutes] = (session.endTime as string).split(':').map(Number);
       const sessionEndTimeInMinutes = sessionHours * 60 + sessionMinutes;
       
       if (sessionDate < today) {
@@ -53,12 +62,15 @@ export async function GET(request: NextRequest) {
       return {
         ...session,
         status,
-        _id: session._id.toString() // Convert ObjectId to string for frontend
-      };
+        _id: session._id.toString(), // Convert ObjectId to string for frontend
+        date: session.date,
+        startTime: session.startTime,
+        endTime: session.endTime
+      } as SessionData;
     });
     
     // Sort sessions: upcoming first, then by date/time
-    const sortedSessions = sessions.sort((a: any, b: any) => {
+    const sortedSessions = sessions.sort((a: SessionData, b: SessionData) => {
       // First sort by status priority (upcoming first, then completed)
       const statusPriority = { upcoming: 0, completed: 1, missed: 2 };
       const statusDiff = statusPriority[a.status as keyof typeof statusPriority] - statusPriority[b.status as keyof typeof statusPriority];

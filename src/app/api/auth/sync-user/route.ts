@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 
     if (existingUser) {
       // Update existing user, preserving emailNotifications if it exists
-      const updateData: any = {
+      const updateData: Record<string, unknown> = {
         email,
         fullName,
         updatedAt: new Date(),
