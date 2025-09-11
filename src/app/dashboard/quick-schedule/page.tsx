@@ -38,7 +38,7 @@ export default function QuickSchedulePage() {
 
     try {
       const duration = parseInt(selectedDuration);
-      let startTime = new Date();
+      const startTime = new Date();
       
       if (selectedTime === 'now') {
         // Start immediately

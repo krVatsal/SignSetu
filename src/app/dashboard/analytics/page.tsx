@@ -18,7 +18,6 @@ interface AnalyticsData {
 }
 
 export default function AnalyticsPage() {
-  const { user } = useAuth();
   const router = useRouter();
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [timeframe, setTimeframe] = useState('week');
@@ -242,7 +241,7 @@ export default function AnalyticsPage() {
             </div>
             <div className="p-4 border border-slate-200 rounded-lg">
               <h4 className="font-medium text-slate-900 mb-2">Consistency Goal</h4>
-              <p className="text-sm text-slate-600">You're 3 sessions away from your best week! Keep up the momentum.</p>
+              <p className="text-sm text-slate-600">You&apos;re 3 sessions away from your best week! Keep up the momentum.</p>
             </div>
           </div>
         </div>

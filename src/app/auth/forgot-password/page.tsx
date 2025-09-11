@@ -21,7 +21,7 @@ export default function ForgotPassword() {
     const { error } = await resetPassword(email);
 
     if (error) {
-      setError(error.message);
+      setError(error instanceof Error ? error.message : 'An error occurred while sending reset link');
     } else {
       setMessage('Check your email for a password reset link!');
     }
