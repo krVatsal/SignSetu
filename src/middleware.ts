@@ -11,13 +11,6 @@ export async function middleware(req: NextRequest) {
   // Auth routes that authenticated users shouldn't access
   const authRoutes = ['/auth/signin', '/auth/signup', '/auth/forgot-password']
 
-  // Check if the current route is protected
-  const isProtectedRoute = protectedRoutes.some(route => 
-    pathname.startsWith(route)
-  )
-
-  const isAuthRoute = authRoutes.includes(pathname)
-
   // For now, we'll let the client-side auth handle redirects
   // This middleware will be enhanced when we add server-side session management
   

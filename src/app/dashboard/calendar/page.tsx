@@ -21,12 +21,6 @@ export default function CalendarPage() {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
   // Fetch sessions from API
-  useEffect(() => {
-    if (user) {
-      fetchSessions();
-    }
-  }, [user]);
-
   const fetchSessions = async () => {
     if (!user) return;
     
@@ -40,6 +34,12 @@ export default function CalendarPage() {
       console.error('Error fetching sessions:', error);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      fetchSessions();
+    }
+  }, [user, fetchSessions]);
 
   const handleBack = () => {
     router.push('/dashboard');

@@ -4,21 +4,21 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../contexts/AuthContext';
 
+interface SessionData {
+  _id?: string;
+  title: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  status: string;
+}
+
 export default function Dashboard() {
   const { user, loading, signOut } = useAuth();
   const router = useRouter();
   const [userName, setUserName] = useState('');
-  const [recentSessions, setRecentSessions] = useState([]);
+  const [recentSessions, setRecentSessions] = useState<SessionData[]>([]);
   const [sessionsLoading, setSessionsLoading] = useState(true);
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/auth/signin');
-    } else if (user) {
-      setUserName(user.user_metadata?.full_name || user.email?.split('@')[0] || 'User');
-      fetchRecentSessions();
-    }
-  }, [user, loading, router]);
 
   const fetchRecentSessions = async () => {
     if (!user) return;
@@ -37,10 +37,14 @@ export default function Dashboard() {
     }
   };
 
-  const handleSignOut = async () => {
-    await signOut();
-    router.push('/');
-  };
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/auth/signin');
+    } else if (user) {
+      setUserName(user.user_metadata?.full_name || user.email?.split('@')[0] || 'User');
+      fetchRecentSessions();
+    }
+  }, [user, loading, router, fetchRecentSessions]);
 
   const handleScheduleQuietHour = () => {
     router.push('/dashboard/schedule');
@@ -52,10 +56,6 @@ export default function Dashboard() {
 
   const handleViewCalendar = () => {
     router.push('/dashboard/calendar');
-  };
-
-  const handleViewStats = () => {
-    router.push('/dashboard/analytics');
   };
 
   if (loading) {
@@ -91,7 +91,7 @@ export default function Dashboard() {
               Welcome to QuietHours, {userName}!
             </h2>
             <p className="text-lg text-slate-600 mb-8 max-w-2xl mx-auto">
-              You're all set up! Start scheduling your focused work sessions and receive smart notifications to boost your productivity.
+              You&apos;re all set up! Start scheduling your focused work sessions and receive smart notifications to boost your productivity.
             </p>
             <button 
               onClick={handleScheduleQuietHour}
@@ -151,7 +151,7 @@ export default function Dashboard() {
             </div>
           ) : recentSessions.length > 0 ? (
             <div className="space-y-4">
-              {recentSessions.map((session: any, index: number) => (
+              {recentSessions.map((session: SessionData, index: number) => (
                 <div key={session._id || index} className="flex items-center justify-between p-4 border border-slate-200 rounded-lg">
                   <div className="flex items-center space-x-4">
                     <div className="w-10 h-10 bg-[#FF9505] rounded-lg flex items-center justify-center">

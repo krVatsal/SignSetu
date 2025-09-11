@@ -20,14 +20,6 @@ export default function Home() {
     document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleSocialClick = (platform: string) => {
-    alert(`Opening ${platform} page... (Social media links will be implemented later)`);
-  };
-
-  const handleFooterLinkClick = (link: string) => {
-    alert(`Opening ${link} page... (This will be implemented later)`);
-  };
-
   return (
     <>
       {/* Hero Section */}

@@ -177,7 +177,7 @@ export const startCronJob = () => {
 
   try {
     // Run every 30 seconds to check for reminders (reduced frequency)
-    const task = cron.schedule('*/30 * * * * *', async () => {
+    cron.schedule('*/30 * * * * *', async () => {
       await checkAndSendReminders();
     }, {
       timezone: 'America/New_York' // You can change this to your timezone
