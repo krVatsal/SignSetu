@@ -54,8 +54,7 @@ A modern web application for scheduling focused work sessions with intelligent n
    SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
 
    # MongoDB Configuration
-   MONGODB_URI=your-mongodb-connection-string
-   MONGODB_DB=quiet_hours_scheduler
+   DATABASE=your-mongodb-connection-string
 
    # Email Configuration
    SMTP_HOST=smtp.gmail.com
