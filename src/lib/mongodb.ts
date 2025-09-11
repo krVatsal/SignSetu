@@ -13,7 +13,7 @@ let clientPromise: Promise<MongoClient>
 if (process.env.NODE_ENV === 'development') {
   // In development mode, use a global variable so that the value
   // is preserved across module reloads caused by HMR (Hot Module Replacement).
-  let globalWithMongo = global as typeof globalThis & {
+  const globalWithMongo = global as typeof globalThis & {
     _mongoClientPromise?: Promise<MongoClient>
   }
 
@@ -32,5 +32,5 @@ export { clientPromise }
 
 export async function getDatabase(): Promise<Db> {
   const client = await clientPromise
-  return client.db(process.env.MONGODB_DB || 'quiet_hours_scheduler')
+  return client.db(process.env.MONGODB_DB)
 }

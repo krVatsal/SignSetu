@@ -1,14 +1,18 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Home() {
   const router = useRouter();
+  const { user } = useAuth();
 
   const handleGetStarted = () => {
-    // For now, show an alert. Later this will navigate to auth/signup
-    alert('Redirecting to signup page... (This will be implemented with authentication)');
-    // router.push('/auth/signup');
+    if (user) {
+      router.push('/dashboard');
+    } else {
+      router.push('/auth/signup');
+    }
   };
 
   const handleLearnMore = () => {

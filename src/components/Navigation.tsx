@@ -1,23 +1,30 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Navigation() {
   const router = useRouter();
+  const { user, signOut } = useAuth();
 
   const handleSignIn = () => {
-    // For now, show an alert. Later this will navigate to auth/signin
-    alert('Redirecting to sign in page... (This will be implemented with authentication)');
-    // router.push('/auth/signin');
+    router.push('/auth/signin');
   };
 
   const handleGetStarted = () => {
-    // For now, show an alert. Later this will navigate to auth/signup
-    alert('Redirecting to sign up page... (This will be implemented with authentication)');
-    // router.push('/auth/signup');
+    if (user) {
+      router.push('/dashboard');
+    } else {
+      router.push('/auth/signup');
+    }
   };
 
   const handleLogoClick = () => {
+    router.push('/');
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
     router.push('/');
   };
 
@@ -36,18 +43,40 @@ export default function Navigation() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <button 
-              onClick={handleSignIn}
-              className="text-slate-600 hover:text-slate-900 px-3 py-2 text-sm font-medium transition-colors"
-            >
-              Sign In
-            </button>
-            <button 
-              onClick={handleGetStarted}
-              className="bg-[#FF9505] hover:bg-[#E6850A] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            >
-              Get Started
-            </button>
+            {user ? (
+              <>
+                <span className="text-sm text-slate-600">
+                  Welcome, {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}!
+                </span>
+                <button 
+                  onClick={() => router.push('/dashboard')}
+                  className="text-slate-600 hover:text-slate-900 px-3 py-2 text-sm font-medium transition-colors"
+                >
+                  Dashboard
+                </button>
+                <button 
+                  onClick={handleSignOut}
+                  className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <>
+                <button 
+                  onClick={handleSignIn}
+                  className="text-slate-600 hover:text-slate-900 px-3 py-2 text-sm font-medium transition-colors"
+                >
+                  Sign In
+                </button>
+                <button 
+                  onClick={handleGetStarted}
+                  className="bg-[#FF9505] hover:bg-[#E6850A] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                >
+                  Get Started
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>
