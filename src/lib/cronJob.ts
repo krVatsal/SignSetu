@@ -41,7 +41,7 @@ const formatDate = (dateStr: string): string => {
   });
 };
 
-const checkAndSendReminders = async () => {
+export const checkAndSendReminders = async () => {
   try {
     console.log('🔍 Checking for sessions that need reminders...');
     
@@ -170,6 +170,12 @@ const checkAndSendReminders = async () => {
 };
 
 export const startCronJob = () => {
+  // Don't start CRON jobs in Vercel production environment
+  if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
+    console.log('🚫 CRON job disabled in Vercel environment. Use Vercel Cron instead.');
+    return;
+  }
+
   if (cronJobStarted) {
     console.log('⚠️ CRON job already running');
     return;
