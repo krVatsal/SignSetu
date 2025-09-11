@@ -20,9 +20,66 @@ export async function GET(request: NextRequest) {
       throw new Error('Database connection not available');
     }
     
-    const sessions = await db.collection('sessions').find({ userId }).sort({ date: 1, startTime: 1 }).toArray();
+    // Get sessions sorted by date and time (newest/upcoming first)
+    const sessionsData = await db.collection('sessions').find({ userId }).sort({ date: -1, startTime: -1 }).toArray();
+    
+    // Calculate dynamic status for each session
+    const now = new Date();
+    const today = now.toISOString().split('T')[0]; // YYYY-MM-DD format
+    const currentTime = now.getHours() * 60 + now.getMinutes(); // current time in minutes since midnight
+    
+    const sessions = sessionsData.map((session: any) => {
+      let status = 'upcoming';
+      
+      const sessionDate = session.date;
+      const [sessionHours, sessionMinutes] = session.endTime.split(':').map(Number);
+      const sessionEndTimeInMinutes = sessionHours * 60 + sessionMinutes;
+      
+      if (sessionDate < today) {
+        // Past date - completed or missed
+        status = 'completed';
+      } else if (sessionDate === today) {
+        // Today - check time
+        if (currentTime > sessionEndTimeInMinutes) {
+          status = 'completed';
+        } else {
+          status = 'upcoming';
+        }
+      } else {
+        // Future date
+        status = 'upcoming';
+      }
+      
+      return {
+        ...session,
+        status,
+        _id: session._id.toString() // Convert ObjectId to string for frontend
+      };
+    });
+    
+    // Sort sessions: upcoming first, then by date/time
+    const sortedSessions = sessions.sort((a: any, b: any) => {
+      // First sort by status priority (upcoming first, then completed)
+      const statusPriority = { upcoming: 0, completed: 1, missed: 2 };
+      const statusDiff = statusPriority[a.status as keyof typeof statusPriority] - statusPriority[b.status as keyof typeof statusPriority];
+      
+      if (statusDiff !== 0) return statusDiff;
+      
+      // Then sort by date (upcoming: earliest first, completed: latest first)
+      if (a.status === 'upcoming') {
+        // For upcoming sessions, show earliest first
+        const dateDiff = a.date.localeCompare(b.date);
+        if (dateDiff !== 0) return dateDiff;
+        return a.startTime.localeCompare(b.startTime);
+      } else {
+        // For completed sessions, show latest first
+        const dateDiff = b.date.localeCompare(a.date);
+        if (dateDiff !== 0) return dateDiff;
+        return b.startTime.localeCompare(a.startTime);
+      }
+    });
 
-    return NextResponse.json({ sessions });
+    return NextResponse.json({ sessions: sortedSessions });
   } catch (error) {
     console.error('Error fetching sessions:', error);
     return NextResponse.json({ error: 'Failed to fetch sessions' }, { status: 500 });

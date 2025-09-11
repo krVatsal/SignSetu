@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../contexts/AuthContext';
 
 interface ScheduledSession {
-  id: string;
+  _id: string;
   title: string;
   date: string;
   startTime: string;
@@ -119,7 +119,7 @@ export default function CalendarPage() {
               <div className="space-y-4">
                 {selectedDateSessions.length > 0 ? (
                   selectedDateSessions.map((session) => (
-                    <div key={session.id} className="border border-slate-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div key={session._id} className="border border-slate-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center space-x-3 mb-2">
@@ -199,13 +199,13 @@ export default function CalendarPage() {
               <div className="space-y-3">
                 <button
                   onClick={() => router.push('/dashboard/quick-schedule')}
-                  className="w-full text-left px-4 py-3 rounded-lg border border-slate-200 hover:border-[#FF9505] hover:bg-[#FF9505] hover:text-white transition-all"
+                  className="w-full text-gray-700 text-left px-4 py-3 rounded-lg border border-slate-200 hover:border-[#FF9505] hover:bg-[#FF9505] hover:text-white transition-all"
                 >
                   Quick Schedule
                 </button>
                 <button
                   onClick={handleScheduleNew}
-                  className="w-full text-left px-4 py-3 rounded-lg border border-slate-200 hover:border-[#FF9505] hover:bg-[#FF9505] hover:text-white transition-all"
+                  className="w-full text-gray-700 text-left px-4 py-3 rounded-lg border border-slate-200 hover:border-[#FF9505] hover:bg-[#FF9505] hover:text-white transition-all"
                 >
                   Full Schedule
                 </button>

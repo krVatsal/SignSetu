@@ -75,23 +75,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      {/* Dashboard Header */}
-      <header className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <h1 className="text-xl font-bold text-slate-900">QuietHours Dashboard</h1>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-slate-600">Welcome, {userName}!</span>
-              <button
-                onClick={handleSignOut}
-                className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-              >
-                Sign Out
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+
 
       {/* Dashboard Content */}
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -119,7 +103,7 @@ export default function Dashboard() {
         </div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Quick Schedule */}
           <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="w-12 h-12 bg-[#FF9505] rounded-lg flex items-center justify-center mb-4">
@@ -154,22 +138,7 @@ export default function Dashboard() {
             </button>
           </div>
 
-          {/* Analytics */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <div className="w-12 h-12 bg-[#FFB366] rounded-lg flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-            </div>
-            <h3 className="text-lg font-semibold text-slate-900 mb-2">Focus Analytics</h3>
-            <p className="text-slate-600 mb-4">Track your productivity patterns and focus session completion rates.</p>
-            <button 
-              onClick={handleViewStats}
-              className="text-[#FF9505] hover:text-[#E6850A] font-medium text-sm"
-            >
-              View Stats →
-            </button>
-          </div>
+
         </div>
 
         {/* Recent Activity */}

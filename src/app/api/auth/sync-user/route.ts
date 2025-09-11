@@ -26,16 +26,22 @@ export async function POST(request: NextRequest) {
     const existingUser = await usersCollection.findOne({ userId });
 
     if (existingUser) {
-      // Update existing user
+      // Update existing user, preserving emailNotifications if it exists
+      const updateData: any = {
+        email,
+        fullName,
+        updatedAt: new Date(),
+      };
+      
+      // If user doesn't have emailNotifications field, add it
+      if (!existingUser.hasOwnProperty('emailNotifications')) {
+        updateData.emailNotifications = true;
+        updateData.reminderMinutes = 10;
+      }
+      
       await usersCollection.updateOne(
         { userId },
-        {
-          $set: {
-            email,
-            fullName,
-            updatedAt: new Date(),
-          },
-        }
+        { $set: updateData }
       );
     } else {
       // Create new user
@@ -46,6 +52,9 @@ export async function POST(request: NextRequest) {
         createdAt: new Date(),
         updatedAt: new Date(),
         quietHours: [], // Array to store scheduled quiet hours
+        emailNotifications: true, // Direct field for easier access
+        reminderMinutes: 10,
+        timezone: 'UTC',
         preferences: {
           emailNotifications: true,
           reminderMinutes: 10,

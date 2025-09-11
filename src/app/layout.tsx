@@ -4,6 +4,9 @@ import "./globals.css";
 import Navigation from "../components/Navigation";
 import { AuthProvider } from "../contexts/AuthContext";
 
+// Initialize database connection on server startup
+import "../lib/startup";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
