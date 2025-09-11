@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '../../../../lib/mongodb';
+import { getDatabase } from '../../../../lib/mongodb';
 import mongoose from 'mongoose';
 
 export async function POST(request: NextRequest) {
   try {
-    await dbConnect();
+    // Ensure database connection is established
+    const db = await getDatabase();
     
     const { userId, email, fullName } = await request.json();
 
@@ -13,11 +14,6 @@ export async function POST(request: NextRequest) {
         { error: 'User ID and email are required' },
         { status: 400 }
       );
-    }
-
-    const db = mongoose.connection.db;
-    if (!db) {
-      throw new Error('Database connection not available');
     }
     
     const usersCollection = db.collection('users');
